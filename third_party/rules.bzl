@@ -89,6 +89,7 @@ def tf_gpu_kernel_library(srcs,
       deps=deps + if_cuda([
           # clean_dep("//tensorflow/core:cuda"),
           # clean_dep("//tensorflow/core:gpu_lib"),
+          "@local_config_cuda//cuda:cuda_headers"
       ]),
       alwayslink=1,
       **kwargs)

@@ -105,7 +105,7 @@ def _get_cxx_inc_directories_impl(repository_ctx, cc, lang_is_cpp):
   else:
     inc_dirs = result.stderr[index1 + 1:index2].strip()
 
-  return [repository_ctx.path(_cxx_inc_convert(p))
+  return [str(repository_ctx.path(_cxx_inc_convert(p)))
           for p in inc_dirs.split("\n")]
 
 def get_cxx_inc_directories(repository_ctx, cc):
@@ -116,7 +116,7 @@ def get_cxx_inc_directories(repository_ctx, cc):
   includes_cpp = _get_cxx_inc_directories_impl(repository_ctx, cc, True)
   includes_c = _get_cxx_inc_directories_impl(repository_ctx, cc, False)
 
-  includes_cpp_set = set(includes_cpp)
+  includes_cpp_set = depset(includes_cpp)
   return includes_cpp + [inc for inc in includes_c
                          if inc not in includes_cpp_set]
 
