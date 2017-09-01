@@ -828,6 +828,8 @@ def _read_dir(repository_ctx, src_dir):
 def _use_cuda_clang(repository_ctx):
   if "TF_CUDA_CLANG" in repository_ctx.os.environ:
     enable_cuda = repository_ctx.os.environ["TF_CUDA_CLANG"].strip()
+    if enable_cuda == "1":
+      print("UUUUSSEEE hCUDA Clangggggggggggg")
     return enable_cuda == "1"
   return False
 
@@ -952,10 +954,8 @@ def _create_cuda_repository(repository_ctx):
 def _cuda_autoconf_impl(repository_ctx):
   """Implementation of the cuda_autoconf repository rule."""
   if not _enable_cuda(repository_ctx):
-    print("NNOOOO")
     _create_dummy_repository(repository_ctx)
   else:
-    print("YES")
     _create_cuda_repository(repository_ctx)
 
 

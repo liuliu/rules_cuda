@@ -1,43 +1,14 @@
-build --action_env PYTHON_BIN_PATH="/usr/bin/python"
-build --action_env PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-build --define PYTHON_BIN_PATH="/usr/bin/python"
-build --define PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-build --force_python=py2
-build --host_force_python=py2
-build --python2_path="/usr/bin/python"
-test --force_python=py2
-test --host_force_python=py2
-test --define PYTHON_BIN_PATH="/usr/bin/python"
-test --define PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-run --define PYTHON_BIN_PATH="/usr/bin/python"
-run --define PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-build --action_env TF_NEED_OPENCL="0"
-build --action_env TF_NEED_CUDA="1"
-build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda"
-build --action_env TF_CUDA_VERSION="8.0"
-build --action_env CUDNN_INSTALL_PATH="/usr/local/cuda-8.0"
-build --action_env TF_CUDNN_VERSION="6"
-build --action_env TF_CUDA_COMPUTE_CAPABILITIES="6.1"
-build --action_env TF_CUDA_CLANG="0"
-build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/gcc-5"
-build --config=cuda_clang
-test --config=cuda_clang
-build:opt --cxxopt=-march=native --copt=-march=native
-build:mkl --define with_mkl_support=true
-build:mkl --define using_mkl=true
-build:mkl -c opt
-build:mkl --copt="-DEIGEN_USE_VML"
-
+#build --config=cuda_clang
+#test --config=cuda_clang
 
 build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain
-build:cuda --define=using_cuda=true --define=using_cuda_nvcc=true
+build:cuda --define=using_cuda=true --define=using_cuda_nvcc=true --define=using_cuda_clang=false
+
 
 build:cuda_clang --crosstool_top=@local_config_cuda//crosstool:toolchain
 build:cuda_clang --define=using_cuda=true --define=using_cuda_clang=true
 
 build:win-cuda --define=using_cuda=true --define=using_cuda_nvcc=true
-
-build:mkl --define=using_mkl=true
 
 build:sycl --crosstool_top=@local_config_sycl//crosstool:toolchain
 build:sycl --define=using_sycl=true
@@ -59,34 +30,25 @@ build --genrule_strategy=standalone
 test --genrule_strategy=standalone
 run --genrule_strategy=standalone
 
-build -c opt
-test -c opt
-run -c opt
+#build -c opt
+#test -c opt
+#run -c opt
 
+#build --config=cuda
 
-build --action_env PYTHON_BIN_PATH="/usr/bin/python"
-build --action_env PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-build --define PYTHON_BIN_PATH="/usr/bin/python"
-build --define PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-build --force_python=py2
-build --host_force_python=py2
-build --python2_path="/usr/bin/python"
-test --force_python=py2
-test --host_force_python=py2
-test --define PYTHON_BIN_PATH="/usr/bin/python"
-test --define PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
-run --define PYTHON_BIN_PATH="/usr/bin/python"
-run --define PYTHON_LIB_PATH="/usr/local/lib/python2.7/dist-packages"
 build:opt --cxxopt=-march=native --copt=-march=native
 build --action_env TF_NEED_CUDA="1"
 build --action_env TF_NEED_OPENCL="1"
 build --action_env TF_CUDA_CLANG="1"
+build --action_env HOST_CXX_COMPILER="/usr/bin/clang-6.0"
+build --action_env HOST_C_COMPILER="/usr/bin/clang-6.0"
 build --action_env CLANG_CUDA_COMPILER_PATH="/usr/bin/clang-6.0"
+build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/gcc-5"
+
 build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda"
 build --action_env TF_CUDA_VERSION="8.0"
 build --action_env TF_CUDNN_VERSION=""
 build --action_env CUDNN_INSTALL_PATH="/usr/local/cuda-8.0"
 build --action_env TF_CUDA_COMPUTE_CAPABILITIES="6.1"
-build --action_env HOST_CXX_COMPILER="/usr/bin/clang-6.0"
-build --action_env HOST_C_COMPILER="/usr/bin/clang-6.0"
 build --action_env COMPUTECPP_TOOLKIT_PATH="/usr/local/computecpp"
+
