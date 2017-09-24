@@ -40,9 +40,9 @@ build:opt --cxxopt=-march=native --copt=-march=native
 build --action_env TF_NEED_CUDA="1"
 build --action_env TF_NEED_OPENCL="1"
 build --action_env TF_CUDA_CLANG="1"
-build --action_env HOST_CXX_COMPILER="/usr/bin/clang-6.0"
-build --action_env HOST_C_COMPILER="/usr/bin/clang-6.0"
-build --action_env CLANG_CUDA_COMPILER_PATH="/usr/bin/clang-6.0"
+build --action_env HOST_CXX_COMPILER="/usr/bin/clang"
+build --action_env HOST_C_COMPILER="/usr/bin/clang"
+build --action_env CLANG_CUDA_COMPILER_PATH="/usr/bin/clang"
 build --action_env GCC_HOST_COMPILER_PATH="/usr/bin/gcc-5"
 
 build --action_env CUDA_TOOLKIT_PATH="/usr/local/cuda"
