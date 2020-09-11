@@ -37,7 +37,7 @@ load(
     "setup_vc_env_vars",
 )
 load(
-    "//third_party/remote_config:common.bzl",
+    "//common/bazel_tools/remote_config:common.bzl",
     "config_repo_label",
     "err_out",
     "execute",
@@ -708,14 +708,14 @@ def _tpl(repository_ctx, tpl, substitutions = {}, out = None):
         out = tpl.replace(":", "/")
     repository_ctx.template(
         out,
-        Label("//third_party/gpus/%s.tpl" % tpl),
+        Label("//common/bazel_tools/gpus/%s.tpl" % tpl),
         substitutions,
     )
 
 def _file(repository_ctx, label):
     repository_ctx.template(
         label.replace(":", "/"),
-        Label("//third_party/gpus/%s.tpl" % label),
+        Label("//common/bazel_tools/gpus/%s.tpl" % label),
         {},
     )
 
@@ -917,7 +917,7 @@ def _compute_cuda_extra_copts(repository_ctx, compute_capabilities):
     return str(copts)
 
 def _tpl_path(repository_ctx, filename):
-    return repository_ctx.path(Label("//third_party/gpus/%s.tpl" % filename))
+    return repository_ctx.path(Label("//common/bazel_tools/gpus/%s.tpl" % filename))
 
 def _basename(repository_ctx, path_str):
     """Returns the basename of a path of type string.
@@ -952,7 +952,7 @@ def _create_local_cuda_repository(repository_ctx):
         "cuda:cuda_config.py",
     ]}
     tpl_paths["cuda:BUILD"] = _tpl_path(repository_ctx, "cuda:BUILD.windows" if is_windows(repository_ctx) else "cuda:BUILD")
-    find_cuda_config_script = repository_ctx.path(Label("@org_tensorflow//third_party/gpus:find_cuda_config.py.gz.base64"))
+    find_cuda_config_script = repository_ctx.path(Label("//common/bazel_tools/gpus:find_cuda_config.py.gz.base64"))
 
     cuda_config = _get_cuda_config(repository_ctx, find_cuda_config_script)
 
@@ -1049,7 +1049,7 @@ def _create_local_cuda_repository(repository_ctx):
         ],
     ))
 
-    check_cuda_libs_script = repository_ctx.path(Label("@org_tensorflow//third_party/gpus:check_cuda_libs.py"))
+    check_cuda_libs_script = repository_ctx.path(Label("//common/bazel_tools/gpus:check_cuda_libs.py"))
     cuda_libs = _find_libs(repository_ctx, check_cuda_libs_script, cuda_config)
     cuda_lib_srcs = []
     cuda_lib_outs = []
@@ -1063,7 +1063,7 @@ def _create_local_cuda_repository(repository_ctx):
         outs = cuda_lib_outs,
     ))
 
-    # copy files mentioned in third_party/nccl/build_defs.bzl.tpl
+    # copy files mentioned in common/bazel_tools/nccl/build_defs.bzl.tpl
     file_ext = ".exe" if is_windows(repository_ctx) else ""
     copy_rules.append(make_copy_files_rule(
         repository_ctx,
