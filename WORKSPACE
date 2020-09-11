@@ -8,6 +8,6 @@ http_archive(
 	],
 )
 
-load("//common/bazel_tools/gpus:cuda_configure.bzl", "cuda_configure")
+load("//gpus:cuda_configure.bzl", "cuda_configure")
 
 cuda_configure(name = "local_config_cuda")
