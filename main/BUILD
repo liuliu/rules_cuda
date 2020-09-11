@@ -2,7 +2,7 @@ load("@local_config_cuda//cuda:build_defs.bzl", "cuda_library")
 
 cuda_library(
     name = "vectorAdd",
-    srcs = ["vectorAdd.cu.cc"],
+    srcs = ["vectorAdd.cu"],
     hdrs = ["vectorAdd.h"],
     visibility = ["//visibility:public"],
     deps = [
