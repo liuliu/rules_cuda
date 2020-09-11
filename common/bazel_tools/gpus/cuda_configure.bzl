@@ -8,7 +8,6 @@
   * `CLANG_CUDA_COMPILER_PATH`: The clang compiler path that will be used for
     both host and device code compilation if TF_CUDA_CLANG is 1.
   * `TF_SYSROOT`: The sysroot to use when compiling.
-  * `TF_DOWNLOAD_CLANG`: Whether to download a recent release of clang
     compiler and use it to build tensorflow. When this option is set
     CLANG_CUDA_COMPILER_PATH is ignored.
   * `TF_CUDA_PATHS`: The base paths to look for CUDA and cuDNN. Default is
@@ -62,7 +61,6 @@ _TF_CUDNN_VERSION = "TF_CUDNN_VERSION"
 _CUDNN_INSTALL_PATH = "CUDNN_INSTALL_PATH"
 _TF_CUDA_COMPUTE_CAPABILITIES = "TF_CUDA_COMPUTE_CAPABILITIES"
 _TF_CUDA_CONFIG_REPO = "TF_CUDA_CONFIG_REPO"
-_TF_DOWNLOAD_CLANG = "TF_DOWNLOAD_CLANG"
 _PYTHON_BIN_PATH = "PYTHON_BIN_PATH"
 
 def to_list_of_strings(elements):
@@ -217,8 +215,6 @@ def find_cc(repository_ctx):
     if _use_cuda_clang(repository_ctx):
         target_cc_name = "clang"
         cc_path_envvar = _CLANG_CUDA_COMPILER_PATH
-        if _flag_enabled(repository_ctx, _TF_DOWNLOAD_CLANG):
-            return "extra_tools/bin/clang"
     else:
         target_cc_name = "gcc"
         cc_path_envvar = _GCC_HOST_COMPILER_PATH
@@ -1150,14 +1146,9 @@ def _create_local_cuda_repository(repository_ctx):
     is_cuda_clang = _use_cuda_clang(repository_ctx)
     tf_sysroot = _tf_sysroot(repository_ctx)
 
-    should_download_clang = is_cuda_clang and _flag_enabled(
-        repository_ctx,
-        _TF_DOWNLOAD_CLANG,
-    )
-
     # Set up crosstool/
     cc = find_cc(repository_ctx)
-    cc_fullpath = cc if not should_download_clang else "crosstool/" + cc
+    cc_fullpath = cc
 
     host_compiler_includes = get_cxx_inc_directories(
         repository_ctx,
@@ -1186,10 +1177,7 @@ def _create_local_cuda_repository(repository_ctx):
     # TODO: when bazel stops adding '-B/usr/bin' by default, remove this
     #       flag from the CROSSTOOL completely (see
     #       https://github.com/bazelbuild/bazel/issues/5634)
-    if should_download_clang:
-        cuda_defines["%{linker_bin_path}"] = ""
-    else:
-        cuda_defines["%{linker_bin_path}"] = host_compiler_prefix
+    cuda_defines["%{linker_bin_path}"] = host_compiler_prefix
 
     cuda_defines["%{extra_no_canonical_prefixes_flags}"] = ""
     cuda_defines["%{unfiltered_compile_flags}"] = ""
@@ -1379,7 +1367,6 @@ _ENVIRONS = [
     _CLANG_CUDA_COMPILER_PATH,
     "TF_NEED_CUDA",
     "TF_CUDA_CLANG",
-    _TF_DOWNLOAD_CLANG,
     _CUDA_TOOLKIT_PATH,
     _CUDNN_INSTALL_PATH,
     _TF_CUDA_VERSION,
