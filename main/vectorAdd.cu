@@ -21,6 +21,13 @@
 
 // For the CUDA runtime routines (prefixed with "cuda_")
 #include <cuda_runtime.h>
+#include <cuda.h>
+#include <cuda_fp16.h>
+
+#include <cudnn.h>
+#include <curand_kernel.h>
+#include <cublas_v2.h>
+#include <nccl.h>
 
 /**
  * CUDA Kernel Device code
