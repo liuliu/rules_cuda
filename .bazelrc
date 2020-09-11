@@ -1,7 +1,6 @@
 build:cuda --crosstool_top=@local_config_cuda//crosstool:toolchain
 build:cuda --define=using_cuda=true --define=using_cuda_nvcc=true --define=using_cuda_clang=false
 
-
 build:cuda_clang --crosstool_top=@local_config_cuda//crosstool:toolchain
 build:cuda_clang --define=using_cuda=true --define=using_cuda_clang=true
 

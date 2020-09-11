@@ -1,7 +1,6 @@
-load("//third_party:rules.bzl", "tf_cuda_library")
-load("//third_party:rules.bzl", "tf_gpu_kernel_library")
+load("@local_config_cuda//cuda:build_defs.bzl", "cuda_library")
 
-tf_gpu_kernel_library(
+cuda_library(
     name = "vectorAdd",
     srcs = ["vectorAdd.cu.cc"],
     hdrs = ["vectorAdd.h"],
