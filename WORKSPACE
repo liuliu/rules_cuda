@@ -9,5 +9,7 @@ http_archive(
 )
 
 load("//gpus:cuda_configure.bzl", "cuda_configure")
+load("//nccl:nccl_configure.bzl", "nccl_configure")
 
 cuda_configure(name = "local_config_cuda")
+nccl_configure(name = "local_config_nccl")
