@@ -230,7 +230,8 @@ def InvokeNvcc(argv, log=False):
     nvccopts += r'-gencode=arch=compute_%s,\"code=compute_%s\" ' % (capability,
                                                                     capability)
   nvccopts += nvcc_compiler_options
-  nvccopts += ' --allow-unsupported-compiler' # allow any version of clang / gcc.
+  nvccopts += ' --keep' # Doesn't actively remove files under /tmp, it causes compilation errors sometimes.
+  nvccopts += ' --allow-unsupported-compiler' # Allow any version of clang / gcc.
   nvccopts += undefines
   nvccopts += defines
   nvccopts += std_options
