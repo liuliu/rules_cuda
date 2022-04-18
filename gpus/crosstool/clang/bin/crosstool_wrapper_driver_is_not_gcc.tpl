@@ -322,7 +322,7 @@ def LinkNvcc(argv, log=False):
     '@%s' % args_path
   ] + args
   cmd = [NVCC_PATH] + args
-  rturn subprocess.call(cmd)
+  return subprocess.call(cmd)
 
 
 def main():
