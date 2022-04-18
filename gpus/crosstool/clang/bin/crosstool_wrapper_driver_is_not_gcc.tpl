@@ -318,7 +318,7 @@ def LinkNvcc(argv, log=False):
   with ClosingFileDescriptor(args_fd):
     args = ProcessLinkArgs(args_fd, argv)
   args = [
-    '--compiler-options'.
+    '--compiler-options',
     '@%s' % args_path
   ] + args
   cmd = [NVCC_PATH] + args
