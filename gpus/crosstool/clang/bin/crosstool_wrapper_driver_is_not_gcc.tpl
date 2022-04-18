@@ -340,7 +340,7 @@ def main():
     if '-c' in leftover:
       return CompileNvcc(leftover, log=args.cuda_log, device_c=args.device_c)
     else:
-      LinkNvcc(normalized_args, log=args.cuda_log)
+      return LinkNvcc(normalized_args, log=args.cuda_log)
 
   # Strip our flags before passing through to the CPU compiler for files which
   # are not -x cuda. We can't just pass 'leftover' because it also strips -x.
