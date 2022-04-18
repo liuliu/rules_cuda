@@ -329,7 +329,7 @@ def main():
   parser = ArgumentParser()
   parser.add_argument('-x', nargs=1)
   parser.add_argument('--cuda_log', action='store_true')
-  parser.add_argument('--device-c', action='store_true')
+  parser.add_argument('--device-c', dest='device_c', action='store_true')
   normalized_args = NormalizeArgs(sys.argv[1:])
   args, leftover = parser.parse_known_args(normalized_args)
 
