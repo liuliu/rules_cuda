@@ -5,11 +5,11 @@ cc_library(
     srcs = ["squareAdd.cc"],
     hdrs = ["squareAdd.h"],
     copts = [
-        "-x", "-cuda",
+        "-x", "cuda",
         "--device-c",
     ],
     linkopts = [
-        "-x", "-cuda",
+        "-x", "cuda",
     ],
 )
 
@@ -30,5 +30,5 @@ cuda_library(
 cc_binary(
   name='main',
   srcs=['main.cc'],
-  deps=[':vectorAdd'],
+  deps=[':vectorSquareAdd'],
 )

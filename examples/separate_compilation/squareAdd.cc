@@ -1,3 +1,3 @@
-__device__ __host__ void squareAdd(double& c, double a, double b) {
+__device__ __host__ void squareAdd(float& c, float a, float b) {
   c = a * a + b * b;
 }
