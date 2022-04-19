@@ -8,6 +8,7 @@ cc_library(
         "-x", "cuda",
         "--device-c",
     ],
+    linkstatic = 1,
     linkopts = [
         "-x", "cuda",
     ],
