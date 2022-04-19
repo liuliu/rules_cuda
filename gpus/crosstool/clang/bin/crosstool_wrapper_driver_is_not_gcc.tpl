@@ -39,11 +39,13 @@ from __future__ import print_function
 __author__ = 'keveman@google.com (Manjunath Kudlur)'
 
 from argparse import ArgumentParser
+import contextlib
 import os
 import subprocess
 import re
 import sys
 import pipes
+import tempfile
 
 # Template values set by cuda_autoconf.
 CPU_COMPILER = ('%{cpu_compiler}')
@@ -55,6 +57,24 @@ NVCC_VERSION = '%{cuda_version}'
 
 def Log(s):
   print('gpus/crosstool: {0}'.format(s))
+
+@contextlib.contextmanager
+def ClosingFileDescriptor(fd):
+  try:
+    yield fd
+  finally:
+    os.close(fd)
+
+
+def NormalizeArgs(args):
+  result = []
+  for arg in args:
+    if arg.startswith('@'):
+      with open(arg[1:], 'r') as f:
+        result += [line[:-1] for line in f.readlines()]
+    else:
+      result.append(arg)
+  return result
 
 
 def GetOptionValue(argv, option):
@@ -161,8 +181,8 @@ def system(cmd):
   else:
     return -os.WTERMSIG(retv)
 
-def InvokeNvcc(argv, log=False):
-  """Call nvcc with arguments assembled from argv.
+def CompileNvcc(argv, log=False, device_c=False):
+  """Compile with nvcc using arguments assembled from argv.
 
   Args:
     argv: A list of strings, possibly the argv passed to main().
@@ -238,6 +258,8 @@ def InvokeNvcc(argv, log=False):
   nvccopts += m_options
   nvccopts += warning_options
   nvccopts += fatbin_options
+  if device_c:
+    nvccopts += ' --device-c'
 
   if depfiles:
     # Generate the dependency file
@@ -264,18 +286,61 @@ def InvokeNvcc(argv, log=False):
   if log: Log(cmd)
   return system(cmd)
 
+def ProcessLinkArgs(args_fd, argv):
+  nargs = len(argv)
+  args = []
+  index = 0
+  while index < nargs:
+    arg = argv[index]
+    if arg == '-o' and index + 1 < nargs:
+      args += ['-o', argv[index+1]]
+      index += 1
+    elif arg.startswith('-x'):
+      index += 1
+      pass
+    elif arg == '--cudalog':
+      pass
+    elif arg.startswith('-'):
+      os.write(args_fd, arg + '\n')
+    else:
+      args.append(arg)
+    index += 1
+  return args
+
+def LinkNvcc(argv, log=False):
+  """Link with nvcc using arguments assembled from argv.
+  
+  Args:
+    argv: A list of strings, possibly the argv passed to main().
+    log: True if logging is requested.
+  """
+  args_fd, args_path = tempfile.mkstemp(dir='./', suffix='.params')
+  with ClosingFileDescriptor(args_fd):
+    args = ProcessLinkArgs(args_fd, argv)
+  args = [
+    '--compiler-options',
+    '@%s' % args_path
+  ] + args
+  cmd = [NVCC_PATH] + args
+  return subprocess.call(cmd)
+
 
 def main():
   parser = ArgumentParser()
   parser.add_argument('-x', nargs=1)
   parser.add_argument('--cuda_log', action='store_true')
-  args, leftover = parser.parse_known_args(sys.argv[1:])
+  parser.add_argument('--device-c', dest='device_c', action='store_true')
+  normalized_args = NormalizeArgs(sys.argv[1:])
+  args, leftover = parser.parse_known_args(normalized_args)
 
   if args.x and args.x[0] == 'cuda':
     if args.cuda_log: Log('-x cuda')
     leftover = [pipes.quote(s) for s in leftover]
     if args.cuda_log: Log('using nvcc')
-    return InvokeNvcc(leftover, log=args.cuda_log)
+    if '-c' in leftover:
+      return CompileNvcc(leftover, log=args.cuda_log, device_c=args.device_c)
+    else:
+      return LinkNvcc(normalized_args, log=args.cuda_log)
 
   # Strip our flags before passing through to the CPU compiler for files which
   # are not -x cuda. We can't just pass 'leftover' because it also strips -x.

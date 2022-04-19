@@ -1,4 +1,4 @@
-#include  "examples/vectorAdd.h"
+#include  "vectorAdd.h"
 
 int main() {
   m();
