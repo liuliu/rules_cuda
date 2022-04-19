@@ -161,11 +161,10 @@ m(void)
     // Verify that the result vector is correct
     for (int i = 0; i < numElements; ++i)
     {
-        if (fabs(h_A[i] + h_B[i] - h_C[i]) > 1e-5)
-        {
-            fprintf(stderr, "Result verification failed at element %d!\n", i);
-            exit(EXIT_FAILURE);
-        }
+      if (fabs(h_A[i] * h_A[i] + h_B[i] * h_B[i] - h_C[i]) > 1e-5) {
+        fprintf(stderr, "Result verification failed at element %d!\n", i);
+        exit(EXIT_FAILURE);
+      }
     }
 
     // Free device global memory
