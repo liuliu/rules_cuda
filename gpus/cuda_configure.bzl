@@ -578,7 +578,7 @@ def _find_libs(repository_ctx, check_cuda_libs_script, cuda_config):
             "cupti",
             cpu_value,
             cuda_config.config["cupti_library_dir"],
-            cuda_config.cuda_version,
+            cuda_config.cupti_version,
             static = False,
         ),
         "cusparse": _check_cuda_lib_params(
@@ -662,6 +662,10 @@ def _get_cuda_config(repository_ctx, find_cuda_config_script):
     cuda_version = ("64_%s%s" if is_windows else "%s.%s") % (cuda_major, cuda_minor)
     cudnn_version = ("64_%s" if is_windows else "%s") % config["cudnn_version"]
 
+    cupti_version = cuda_version
+    if int(cuda_major) >= 12:
+        cupti_version = cuda_major
+
     if int(cuda_major) >= 11:
         cublas_version = ("64_%s" if is_windows else "%s") % config["cublas_version"].split(".")[0]
         cusolver_version = ("64_%s" if is_windows else "%s") % config["cusolver_version"].split(".")[0]
@@ -694,6 +698,7 @@ def _get_cuda_config(repository_ctx, find_cuda_config_script):
         cufft_version = cufft_version,
         cusparse_version = cusparse_version,
         cudnn_version = cudnn_version,
+        cupti_version = cupti_version,
         compute_capabilities = compute_capabilities(repository_ctx),
         cpu_value = cpu_value,
         config = config,
