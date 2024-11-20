@@ -75,6 +75,13 @@ cc_library(
     linkstatic = 1,
 )
 
+cc_library(
+    name = "cufile",
+    srcs = ["cuda/lib/%{cufile_lib}"],
+    data = ["cuda/lib/%{cufile_lib}"],
+    linkstatic = 1,
+)
+
 cuda_header_library(
     name = "cublas_headers",
     hdrs = [":cublas-include"],
@@ -170,6 +177,7 @@ cc_library(
         ":cublas",
         ":cuda_headers",
         ":cudart",
+        ":cufile",
         ":cudnn",
         ":cufft",
         ":curand",

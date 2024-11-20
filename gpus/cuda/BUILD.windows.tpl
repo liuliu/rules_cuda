@@ -76,6 +76,12 @@ cc_import(
     system_provided = 1,
 )
 
+cc_import(
+    name = "cufile",
+    interface_library = "cuda/lib/%{cufile_lib}",
+    system_provided = 1,
+)
+
 cuda_header_library(
     name = "cublas_headers",
     hdrs = [":cublas-include"],
@@ -165,6 +171,7 @@ cc_library(
         ":cublas",
         ":cuda_headers",
         ":cudart",
+        ":cufile",
         ":cudnn",
         ":cufft",
         ":curand",
