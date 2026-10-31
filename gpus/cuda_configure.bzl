@@ -434,7 +434,10 @@ def compute_capabilities(repository_ctx):
         for prefix in ["compute_", "sm_"]:
             if not capability.startswith(prefix):
                 continue
-            if len(capability) == len(prefix) + 2 and capability[-2:].isdigit():
+            version = capability[len(prefix):]
+            if version.endswith("a"):
+                version = version[:-1]
+            if version.isdigit() and len(version) in (2, 3):
                 continue
             auto_configure_fail("Invalid compute capability: %s" % capability)
 
