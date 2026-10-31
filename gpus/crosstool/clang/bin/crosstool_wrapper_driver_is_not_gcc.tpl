@@ -251,6 +251,10 @@ def CompileNvcc(argv, log=False, device_c=False):
                                                                     capability)
   nvccopts += nvcc_compiler_options
   nvccopts += ' --keep' # Doesn't actively remove files under /tmp, it causes compilation errors sometimes.
+  keep_dir = out_file[0] + '.nvcc-keep'
+  if not os.path.isdir(keep_dir):
+    os.makedirs(keep_dir)
+  nvccopts += ' --keep-dir ' + keep_dir + ' '
   nvccopts += ' --allow-unsupported-compiler' # Allow any version of clang / gcc.
   nvccopts += undefines
   nvccopts += defines
